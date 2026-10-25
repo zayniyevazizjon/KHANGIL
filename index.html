@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Хангыль — учим корейский алфавит</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#14213d;--mut:#5d6b8a;--line:#d9dff0;--blue:#1d6bff;--red:#e8334a;--green:#12a05c;--vow:#1d6bff;--con:#e8334a;--soft:#e9eefc;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1226;--card:#141c38;--ink:#eaf0ff;--mut:#93a1c7;--line:#26325c;--blue:#4c8dff;--red:#ff5c70;--green:#3ddc8a;--vow:#4c8dff;--con:#ff5c70;--soft:#1b2650;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1226;--card:#141c38;--ink:#eaf0ff;--mut:#93a1c7;--line:#26325c;--blue:#4c8dff;--red:#ff5c70;--green:#3ddc8a;--vow:#4c8dff;--con:#ff5c70;--soft:#1b2650;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Manrope,system-ui,sans-serif;min-height:100vh}
+.kr{font-family:"Noto Sans KR",sans-serif}
+header{max-width:900px;margin:0 auto;padding:22px 16px 8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em;flex:1;min-width:200px}
+h1 span{font-family:"Noto Sans KR";font-weight:900;margin-right:8px;background:linear-gradient(90deg,var(--blue),var(--red));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bar{width:170px;height:10px;border-radius:9px;background:var(--soft);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--red));transition:width .4s}
+.prog{font-size:13px;color:var(--mut)}
+nav{max-width:900px;margin:0 auto;padding:6px 16px;display:flex;gap:8px;overflow-x:auto}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.tab,.chip{border:1.5px solid var(--line);background:var(--card);padding:8px 16px;border-radius:99px;font-weight:600;white-space:nowrap}
+.tab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--soft);border-color:var(--blue)}
+main{max-width:900px;margin:0 auto;padding:12px 16px 120px}
+section.view{display:none}section.view.on{display:block}
+h2{font-size:19px;margin:22px 0 4px}
+.note{color:var(--mut);margin:0 0 10px;font-size:14px;max-width:62ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px}
+.tile{position:relative;border:2px solid var(--line);background:var(--card);border-radius:16px;padding:10px 4px 8px;text-align:center;transition:transform .12s,border-color .12s}
+.tile:hover{transform:translateY(-3px)}
+.tile.v{--c:var(--vow)}.tile.c{--c:var(--con)}
+.tile .g{font:700 38px/1.1 "Noto Sans KR";color:var(--c)}
+.tile .s{font-size:12px;color:var(--mut)}
+.tile.sel{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent)}
+.tile.done::after{content:"✓";position:absolute;top:4px;right:8px;font-size:13px;color:var(--green);font-weight:800}
+.panel{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--line);padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));transform:translateY(110%);transition:transform .25s;z-index:5;box-shadow:0 -10px 30px rgba(10,20,60,.15)}
+.panel.open{transform:none}
+.pin{max-width:900px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center}
+.big{font:900 76px/1 "Noto Sans KR";min-width:100px;text-align:center}
+.big.v{color:var(--vow)}.big.c{color:var(--con)}
+.pin h3{margin:0;font-size:22px}
+.pin p{margin:2px 0 8px;color:var(--mut);font-size:14px}
+.btn{border:0;border-radius:14px;padding:11px 18px;font-weight:700;background:var(--blue);color:#fff;margin:0 6px 6px 0}
+.btn.alt{background:var(--soft);color:var(--ink)}
+.btn.ok{background:var(--green);color:#fff}
+.draw{grid-column:1/-1;display:none}
+.draw.on{display:block}
+.pad{position:relative;height:200px;border:2px dashed var(--line);border-radius:16px;background:var(--bg);touch-action:none;overflow:hidden}
+.pad .ghost{position:absolute;inset:0;display:grid;place-items:center;font:900 170px/1 "Noto Sans KR";color:var(--mut);opacity:.2;pointer-events:none}
+.pad canvas{position:absolute;inset:0;width:100%;height:100%}
+.lab{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px}
+.out{text-align:center;padding:10px}
+.out .syl{font:900 140px/1.1 "Noto Sans KR";background:linear-gradient(90deg,var(--red),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+.out .rd{font-size:22px;font-weight:800}
+.out .eq{color:var(--mut);font-size:14px}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px}
+.mini{min-width:46px;height:46px;border-radius:12px;border:2px solid var(--line);background:var(--card);font:700 22px "Noto Sans KR"}
+.mini.c{color:var(--con)}.mini.v{color:var(--vow)}
+.mini[aria-pressed=true]{background:var(--soft);border-color:currentColor}
+.q{text-align:center}
+.q .big{font-size:120px}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:520px;margin:12px auto}
+.opt{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:16px 8px;font:800 22px Manrope}
+.opt.kr{font:700 40px "Noto Sans KR"}
+.opt.good{border-color:var(--green);background:color-mix(in srgb,var(--green) 18%,var(--card))}
+.opt.bad{border-color:var(--red);background:color-mix(in srgb,var(--red) 15%,var(--card));animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.stat{display:flex;justify-content:center;gap:18px;color:var(--mut);font-weight:600;margin-bottom:6px}
+.toast{text-align:center;color:var(--mut);font-size:13px;min-height:20px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:520px){.big{font-size:60px;min-width:80px}.pin{gap:10px}.out .syl{font-size:110px}}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>한글</span>Хангыль</h1>
+  <div><div class="bar"><i id="bar"></i></div><div class="prog" id="prog"></div></div>
+</header>
+<nav role="tablist">
+  <button class="tab" role="tab" aria-selected="true" data-v="letters">Буквы</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="syl">Слоги</button>
+  <button class="tab" role="tab" aria-selected="false" data-v="quiz">Тренажёр</button>
+</nav>
+<main>
+<section class="view on" id="letters">
+  <p class="note">В хангыле 40 букв: 21 гласная и 19 согласных. Нажми на букву — услышишь звук. Отметь «Выучил», и она получит галочку.</p>
+  <div id="lg"></div>
+</section>
+
+<section class="view" id="syl">
+  <p class="note">Буква = согласная + гласная. Согласная идёт слева или сверху, гласная справа или снизу. Пустая ㅇ в начале слога не читается: ㅇ + ㅏ = 아 («а»).</p>
+  <div class="lab">
+    <div class="out"><div class="syl kr" id="osyl">아</div><div class="rd" id="ord">а</div><div class="eq" id="oeq">ㅇ + ㅏ</div>
+      <button class="btn" id="osay">🔊 Произнести</button></div>
+    <b>Согласная</b><div class="row" id="lc"></div>
+    <b>Гласная</b><div class="row" id="lv"></div>
+  </div>
+</section>
+
+<section class="view" id="quiz">
+  <div class="stat"><span id="qs">Вопрос 1/10</span><span id="qc">Очки 0</span><span id="qk">Серия 0</span></div>
+  <div class="row" style="justify-content:center">
+    <button class="chip" data-p="all" aria-pressed="true">Все</button>
+    <button class="chip" data-p="v" aria-pressed="false">Гласные</button>
+    <button class="chip" data-p="c" aria-pressed="false">Согласные</button>
+  </div>
+  <div class="lab q"><div id="qbox"></div><div class="opts" id="qo"></div><div class="toast" id="qt"></div></div>
+</section>
+</main>
+
+<div class="panel" id="panel" role="dialog" aria-label="Буква">
+  <div class="pin">
+    <div class="big kr" id="pg">ㅏ</div>
+    <div><h3 id="pt"></h3><p id="pd"></p>
+      <button class="btn" id="psay">🔊 Звук</button>
+      <button class="btn alt" id="pdraw">✍️ Пропиши</button>
+      <button class="btn alt" id="pdone">Выучил</button></div>
+    <button class="btn alt" id="pclose" aria-label="Закрыть">✕</button>
+    <div class="draw" id="draw"><div class="pad" id="pad"><div class="ghost kr" id="ghost"></div><canvas id="cv"></canvas></div>
+      <button class="btn alt" id="clr" style="margin-top:8px">Стереть</button></div>
+  </div>
+</div>
+
+<script>
+// ---- данные: [знак, латиница, русский звук, индекс в Unicode, группа, подсказка, начало слога по-русски]
+const V=[
+["ㅏ","a","а",0,"s","Открытый звук «а»."],["ㅓ","eo","ə",4,"s","Открытое «о», рот открыт шире, чем для ㅗ. IPA [ə]."],
+["ㅗ","o","о",8,"s","«О» с округлёнными губами."],["ㅜ","u","у",13,"s","Звук «у»."],
+["ㅡ","eu","ы",18,"s","Звук «ы», губы растянуты."],["ㅣ","i","и",20,"s","Звук «и». Палочка = человек."],
+["ㅑ","ya","я",2,"y","ㅏ + ещё одна черта = «я» (йотированная)."],["ㅕ","yeo","йə",6,"y","ㅓ + черта = «ё» открытое, как «йо»."],
+["ㅛ","yo","йо",12,"y","ㅗ + черта = «ё»."],["ㅠ","yu","ю",17,"y","ㅜ + черта = «ю»."],
+["ㅐ","ae","э",1,"d","Как «э» в слове «эхо»."],["ㅔ","e","е",5,"d","Почти то же, что ㅐ, звучит как «э/е»."],
+["ㅒ","yae","йэ",3,"d","ㅐ с йотом."],["ㅖ","ye","йе",7,"d","ㅔ с йотом."],
+["ㅘ","wa","ва",9,"d","ㅗ + ㅏ: «ва»."],["ㅙ","wae","вэ",10,"d","ㅗ + ㅐ: «вэ»."],
+["ㅚ","oe","вё",11,"d","Читается как «вэ», близко к ㅙ."],["ㅝ","wo","во",14,"d","ㅜ + ㅓ: «во»."],
+["ㅞ","we","ве",15,"d","ㅜ + ㅔ: «ве»."],["ㅟ","wi","ви",16,"d","ㅜ + ㅣ: «ви»."],["ㅢ","ui","ый",19,"d","ㅡ + ㅣ: «ый»."]
+].map(a=>({t:"v",c:a[0],r:a[1],ru:a[2],i:a[3],g:a[4],tip:a[5]}));
+const C=[
+["ㄱ","k/g","к / г",0,"s","к в начале слова, г между гласными.","к"],["ㄴ","n","н",2,"s","Обычное «н».","н"],
+["ㄷ","t/d","т / д",3,"s","т в начале, д между гласными.","т"],["ㄹ","r/l","р / л",5,"s","Лёгкое «р» между гласными, «л» в конце слога.","р"],
+["ㅁ","m","м",6,"s","Обычное «м».","м"],["ㅂ","p/b","п / б",7,"s","п в начале, б между гласными.","п"],
+["ㅅ","s","с / ш",9,"s","«с»; перед ㅣ звучит мягче, как «ш».","с"],["ㅇ","ng","ничего / нг",11,"s","В начале слога молчит, в конце читается «нг».",""],
+["ㅈ","ch/j","ч / дж",12,"s","Между «ч» и «дж».","ч"],["ㅎ","h","х",18,"s","Лёгкое «х».","х"],
+["ㅋ","kh","кх",15,"a","ㄱ + выдох. Свеча колеблется от воздуха!","кх"],["ㅌ","th","тх",16,"a","ㄷ + выдох.","тх"],
+["ㅍ","ph","пх",17,"a","ㅂ + выдох.","пх"],["ㅊ","chh","чх",14,"a","ㅈ + выдох.","чх"],
+["ㄲ","kk","кк",1,"t","Напряжённое ㄱ: сжать горло, без выдоха. 가다 → 까다.","кк"],["ㄸ","tt","тт",4,"t","Напряжённое ㄷ, взрывное.","тт"],
+["ㅃ","pp","пп",8,"t","Напряжённое ㅂ.","пп"],["ㅆ","ss","сс",10,"t","Напряжённое ㅅ.","сс"],["ㅉ","jj","чч",13,"t","Напряжённое ㅈ.","чч"]
+].map(a=>({t:"c",c:a[0],r:a[1],ru:a[2],i:a[3],g:a[4],tip:a[5],on:a[6]}));
+const ALL=[...V,...C];
+const GN={s:"Простые",y:"Йотированные",d:"Дифтонги (сложные гласные)",a:"Придыхательные",t:"Удвоенные (взрывные)"};
+const syl=(l,v,t=0)=>String.fromCharCode(0xAC00+(l*21+v)*28+t);
+const $=s=>document.querySelector(s);
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem("hg")||"[]"))}catch(e){}
+const save=()=>{try{localStorage.setItem("hg",JSON.stringify([...done]))}catch(e){}};
+
+// ---- озвучка
+let voice=null;
+function pickVoice(){voice=(speechSynthesis.getVoices()||[]).find(v=>v.lang&&v.lang.toLowerCase().startsWith("ko"))||null}
+if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function say(txt){
+  if(!("speechSynthesis" in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt);u.lang="ko-KR";u.rate=.7;if(voice)u.voice=voice;
+  speechSynthesis.speak(u);
+}
+const sound=x=>x.t==="v"?syl(11,x.i):syl(x.i,0);
+
+// ---- вкладки
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t===b));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===b.dataset.v));
+  closePanel();if(b.dataset.v==="quiz"&&!qn)nextQ();
+});
+
+// ---- буквы
+function progress(){
+  $("#bar").style.width=done.size/ALL.length*100+"%";
+  $("#prog").textContent="Выучено "+done.size+" из "+ALL.length;
+}
+function renderLetters(){
+  let h="";
+  [["Гласные","v",["s","y","d"]],["Согласные","c",["s","a","t"]]].forEach(([title,t,gs])=>{
+    h+=`<h2>${title}</h2>`;
+    gs.forEach(g=>{
+      const items=ALL.filter(x=>x.t===t&&x.g===g);
+      h+=`<p class="note" style="margin-top:12px"><b>${GN[g]}</b> (${items.length})</p><div class="grid">`+
+      items.map(x=>`<button class="tile ${x.t} ${done.has(x.c)?"done":""}" data-c="${x.c}"><div class="g">${x.c}</div><div class="s">${x.ru}</div></button>`).join("")+`</div>`;
+    });
+  });
+  $("#lg").innerHTML=h;
+  document.querySelectorAll(".tile").forEach(b=>b.onclick=()=>openPanel(ALL.find(x=>x.c===b.dataset.c)));
+  progress();
+}
+let cur=null;
+function openPanel(x){
+  cur=x;
+  $("#pg").textContent=x.c;$("#pg").className="big kr "+x.t;
+  $("#pt").textContent=`${x.c}  [${x.r}]  →  ${x.ru}`;
+  $("#pd").textContent=x.tip;
+  $("#pdone").textContent=done.has(x.c)?"✓ Выучено":"Выучил";
+  $("#pdone").className="btn "+(done.has(x.c)?"ok":"alt");
+  $("#ghost").textContent=x.c;clearCv();
+  document.querySelectorAll(".tile").forEach(t=>t.classList.toggle("sel",t.dataset.c===x.c));
+  $("#panel").classList.add("open");say(sound(x));
+}
+function closePanel(){$("#panel").classList.remove("open");$("#draw").classList.remove("on");document.querySelectorAll(".tile.sel").forEach(t=>t.classList.remove("sel"))}
+$("#pclose").onclick=closePanel;
+$("#psay").onclick=()=>cur&&say(sound(cur));
+$("#pdone").onclick=()=>{done.has(cur.c)?done.delete(cur.c):done.add(cur.c);save();renderLetters();openPanelKeep()};
+function openPanelKeep(){$("#pdone").textContent=done.has(cur.c)?"✓ Выучено":"Выучил";$("#pdone").className="btn "+(done.has(cur.c)?"ok":"alt");document.querySelectorAll(".tile").forEach(t=>t.classList.toggle("sel",t.dataset.c===cur.c))}
+$("#pdraw").onclick=()=>{$("#draw").classList.toggle("on");sizeCv()};
+
+// ---- рисование
+const cv=$("#cv"),cx=cv.getContext("2d");let drawing=false;
+function sizeCv(){const r=cv.getBoundingClientRect();cv.width=r.width*devicePixelRatio;cv.height=r.height*devicePixelRatio;cx.scale(devicePixelRatio,devicePixelRatio);cx.lineWidth=9;cx.lineCap="round";cx.lineJoin="round";cx.strokeStyle=getComputedStyle(document.body).getPropertyValue("--ink")||"#14213d"}
+function clearCv(){cx.save();cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,cv.width,cv.height);cx.restore()}
+const pos=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
+cv.onpointerdown=e=>{drawing=true;cv.setPointerCapture(e.pointerId);const[x,y]=pos(e);cx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--ink");cx.beginPath();cx.moveTo(x,y)};
+cv.onpointermove=e=>{if(!drawing)return;const[x,y]=pos(e);cx.lineTo(x,y);cx.stroke()};
+cv.onpointerup=()=>drawing=false;
+$("#clr").onclick=clearCv;
+
+// ---- слоги
+let L=C.find(x=>x.c==="ㅇ"),Vw=V[0];
+function renderSyl(){
+  $("#lc").innerHTML=C.map(x=>`<button class="mini c" data-c="${x.c}" aria-pressed="${x===L}">${x.c}</button>`).join("");
+  $("#lv").innerHTML=V.map(x=>`<button class="mini v" data-c="${x.c}" aria-pressed="${x===Vw}">${x.c}</button>`).join("");
+  $("#lc").querySelectorAll("button").forEach(b=>b.onclick=()=>{L=C.find(x=>x.c===b.dataset.c);updSyl(true)});
+  $("#lv").querySelectorAll("button").forEach(b=>b.onclick=()=>{Vw=V.find(x=>x.c===b.dataset.c);updSyl(true)});
+  updSyl(false);
+}
+function updSyl(sp){
+  const s=syl(L.i,Vw.i);
+  $("#osyl").textContent=s;$("#ord").textContent=L.on+Vw.ru;
+  $("#oeq").textContent=`${L.c} + ${Vw.c}`+(L.c==="ㅇ"?" (ㅇ молчит)":"");
+  document.querySelectorAll("#lc .mini").forEach(b=>b.setAttribute("aria-pressed",b.dataset.c===L.c));
+  document.querySelectorAll("#lv .mini").forEach(b=>b.setAttribute("aria-pressed",b.dataset.c===Vw.c));
+  if(sp)say(s);
+}
+$("#osay").onclick=()=>say($("#osyl").textContent);
+
+// ---- тренажёр
+let pool="all",qn=0,score=0,streak=0,ans=null,locked=false;
+const shuffle=a=>[...a].sort(()=>Math.random()-.5);
+document.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
+  pool=b.dataset.p;document.querySelectorAll("[data-p]").forEach(c=>c.setAttribute("aria-pressed",c===b));
+  qn=0;score=0;streak=0;nextQ();
+});
+function nextQ(){
+  if(qn>=10){
+    $("#qbox").innerHTML=`<div class="big kr" style="font-size:80px">🎉</div><h3>Результат: ${score} из 10</h3>`;
+    $("#qo").innerHTML=`<button class="btn" style="grid-column:1/-1" id="again">Ещё раз</button>`;
+    $("#again").onclick=()=>{qn=0;score=0;streak=0;nextQ()};$("#qt").textContent="";return;
+  }
+  const src=ALL.filter(x=>pool==="all"||x.t===pool);
+  ans=src[Math.floor(Math.random()*src.length)];
+  const wrong=shuffle(src.filter(x=>x.ru!==ans.ru)).slice(0,3);
+  const opts=shuffle([ans,...wrong]);
+  const rev=Math.random()<.5;locked=false;qn++;
+  $("#qs").textContent=`Вопрос ${qn}/10`;$("#qc").textContent=`Очки ${score}`;$("#qk").textContent=`Серия ${streak}`;$("#qt").textContent="";
+  if(rev){
+    $("#qbox").innerHTML=`<p class="note" style="margin:0 auto 8px">Какая это буква? Нажми 🔊</p><button class="btn" id="qsay">🔊 Слушать</button>`;
+    $("#qsay").onclick=()=>say(sound(ans));setTimeout(()=>say(sound(ans)),200);
+  }else{
+    $("#qbox").innerHTML=`<p class="note" style="margin:0 auto">Как читается эта буква?</p><div class="big kr ${ans.t}">${ans.c}</div><button class="btn alt" id="qsay">🔊 Подсказка</button>`;
+    $("#qsay").onclick=()=>say(sound(ans));
+  }
+  $("#qo").innerHTML=opts.map(o=>`<button class="opt ${rev?"kr":""}" data-c="${o.c}">${rev?o.c:o.ru}</button>`).join("");
+  $("#qo").querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b,rev));
+}
+function pick(b,rev){
+  if(locked)return;locked=true;
+  const ok=b.dataset.c===ans.c;
+  if(ok){score++;streak++;b.classList.add("good");$("#qt").textContent="Верно! "+ans.c+" = "+ans.ru}
+  else{streak=0;b.classList.add("bad");$("#qo").querySelector(`[data-c="${ans.c}"]`).classList.add("good");$("#qt").textContent="Правильно: "+ans.c+" = "+ans.ru+". "+ans.tip}
+  say(sound(ans));
+  $("#qc").textContent=`Очки ${score}`;$("#qk").textContent=`Серия ${streak}`;
+  setTimeout(nextQ,ok?1200:2600);
+}
+
+renderLetters();renderSyl();
+</script>
+</body>
+</html>
